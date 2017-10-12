@@ -1,0 +1,51 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "newtrajdialog.h"
+#include <QDebug>
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    NewTrajDialog NTDlg;
+    if(NTDlg.exec() == QDialog::Accepted)
+    {
+        // show the database.
+        modelGait = new QSqlTableModel(this);
+        modelGait->setTable("gait");
+        modelGait->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        // select all line.
+        modelGait->select();
+        
+        // show the database.
+        modelCartesian = new QSqlTableModel(this);
+        modelCartesian->setTable("catersian");
+        modelCartesian->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        // select all line.
+        modelCartesian->select();
+        
+        // show the database.
+        modelJoint = new QSqlTableModel(this);
+        modelJoint->setTable("gait");
+        modelJoint->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        // select all line.
+        modelJoint->select();
+
+        ui->tableView->setModel(modelGait);
+        // automatically resize the section to fill the available space.
+        ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+        // unable to edit this table.
+        ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    }
+}
